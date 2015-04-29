@@ -39,8 +39,8 @@ namespace ArcGISPclDemo
 
             try
             {
-                var res = PclTester.AddPoint(baseUrl, arcGisServerEndPoint, feature).Result;
-                Console.WriteLine("Added feature to Esri featureserver: {0}", res);
+                var result = await PclTester.AddPoint(baseUrl, arcGisServerEndPoint, feature);
+                Console.WriteLine("Added feature to Esri featureserver: {0}", result);
             }
             catch (ArcGISServerException arcGISServerException)
             {
