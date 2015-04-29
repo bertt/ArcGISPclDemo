@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ArcGIS.ServiceModel.Common;
 
@@ -13,8 +14,6 @@ namespace ArcGISPclDemo
         
         static async Task MainAsync()
         {
-            //var baseUrl = "http://sampleserver3.arcgisonline.com/ArcGIS/";
-            //var arcGisServerEndPoint = "/Earthquakes/EarthquakesFromLastSevenDays/FeatureServer/0";
             var baseUrl = "http://arcgis.geodan.nl:6080/arcgis/";
             var arcGISServerEndPoint = "/public/test_AGF/FeatureServer/4";
 
@@ -22,13 +21,12 @@ namespace ArcGISPclDemo
             ArcGIS.ServiceModel.Serializers.JsonDotNetSerializer.Init();
 
             // get something from featureserver
-            var resFeatureServer = PclTester.GetFeaturesFromFeatureServer(baseUrl, arcGISServerEndPoint);
-            Console.WriteLine("Number of features from Esri featureserver: {0}", resFeatureServer.Result);
+            var resFeatureServer = await FeatureServiceEditor.GetFeatures<Point>(baseUrl, arcGISServerEndPoint);
+            Console.WriteLine("Number of features from Esri featureserver: {0}", resFeatureServer.ToList().Count);
             addPointSample(baseUrl,arcGISServerEndPoint);
 
-            Console.ReadKey();
+            Console.ReadLine();
         }
-
 
         private static async void addPointSample(string baseUrl, string arcGISServerEndPoint)
         {
@@ -46,7 +44,7 @@ namespace ArcGISPclDemo
 
             try
             {
-                var result = await PclTester.AddPoint(baseUrl, arcGISServerEndPoint, feature);
+                var result = await FeatureServiceEditor.AddFeature(baseUrl, arcGISServerEndPoint, feature);
                 Console.WriteLine("Added feature to Esri featureserver: {0}", result);
             }
             catch (ArcGISServerException arcGISServerException)

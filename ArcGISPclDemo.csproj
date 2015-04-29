@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArcGISServerException.cs" />
-    <Compile Include="PclTester.cs" />
+    <Compile Include="FeatureServiceEditor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
