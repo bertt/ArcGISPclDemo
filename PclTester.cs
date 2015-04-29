@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArcGIS.ServiceModel;
@@ -18,22 +19,28 @@ namespace ArcGISPclDemo
         }
 
 
-        public static async Task<int> GetFeaturesFromFeatureServer(string BaseUrl, string ArcGISServerEndPoint)
+        public static async Task<int> GetFeaturesFromFeatureServer(string baseUrl, string arcGISServerEndPoint)
         {
-            var gateway = new PortalGateway(BaseUrl);
-            var queryPoint = new Query(ArcGISServerEndPoint.AsEndpoint());
+            var gateway = new PortalGateway(baseUrl);
+            var queryPoint = new Query(arcGISServerEndPoint.AsEndpoint());
             var resultPoints = await gateway.Query<Point>(queryPoint);
             return resultPoints.Features.Count();
         }
 
-        public static async Task<int> AddFeature(string BaseUrl, string ArcGISServerEndPoint,Feature<Point> feature )
+        public static async Task<int> AddPoint(string baseUrl, string arcGISServerEndPoint,Feature<Point> feature )
         {
-            var gateway = new PortalGateway(BaseUrl);
-            var adds = new ApplyEdits<Point>(ArcGISServerEndPoint.AsEndpoint())
+            var gateway = new PortalGateway(baseUrl);
+            var adds = new ApplyEdits<Point>(arcGISServerEndPoint.AsEndpoint())
             {
                 Adds = new List<Feature<Point>> { feature }
             };
             var resultAdd = await gateway.ApplyEdits(adds);
+
+            if (!resultAdd.Adds[0].Success)
+            {
+                // there was an error, throw exception
+                throw new ArcGISServerException("ArcGIS server returns error.", resultAdd.Adds[0].Error);
+            }
 
             return resultAdd.Adds.Count;
         }

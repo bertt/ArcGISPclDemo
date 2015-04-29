@@ -18,7 +18,7 @@ namespace ArcGISPclDemo
 
             // get something from featureserver
             var resFeatureServer = PclTester.GetFeaturesFromFeatureServer(baseUrl, arcGisServerEndPoint);
-            Console.WriteLine("Earthquakes from Esri featureserver: {0}", resFeatureServer.Result);
+            Console.WriteLine("Number of features from Esri featureserver: {0}", resFeatureServer.Result);
 
             // add a feature
             var feature = new Feature<Point>();
@@ -26,13 +26,23 @@ namespace ArcGISPclDemo
             feature.Attributes.Add("objectid", 0);
             feature.Attributes.Add("o_watergan"," ");
             feature.Attributes.Add("symbologie"," ");
-            feature.Attributes.Add("angle",0);
+            // oops we miss something here to raise error...
+            // feature.Attributes.Add("angle",0);
             feature.Attributes.Add("sysangle",0);
 
             feature.Geometry = new Point { X = 165282.05719999969, Y = 501225.37609999999, SpatialReference = new SpatialReference { Wkid = 28992 } };
 
-            var res = PclTester.AddFeature(baseUrl, arcGisServerEndPoint,feature);
-            Console.WriteLine("Added feature to Esri featureserver: {0}", res.Result);
+            try
+            {
+                var res = PclTester.AddPoint(baseUrl, arcGisServerEndPoint, feature).Result;
+                Console.WriteLine("Added feature to Esri featureserver: {0}", res);
+            }
+            catch (AggregateException ag)
+            {
+                var inner = ag.InnerException;
+                Console.Write("Error message " + inner.Message);
+                Console.Write("Error code: " + ((ArcGISServerException)inner).ArcGISError.Code);
+            }
 
             Console.ReadKey();
         }
