@@ -32,8 +32,8 @@ namespace ArcGISPclDemo
             feature.Attributes.Add("o_watergan"," ");
             feature.Attributes.Add("symbologie"," ");
             // oops we miss something here to raise error...
-            // feature.Attributes.Add("angle",0);
-            feature.Attributes.Add("sysangle",0);
+            feature.Attributes.Add("angle",0);
+            // feature.Attributes.Add("sysangle",0);
 
             feature.Geometry = new Point { X = 165282.05719999969, Y = 501225.37609999999, SpatialReference = new SpatialReference { Wkid = 28992 } };
 
