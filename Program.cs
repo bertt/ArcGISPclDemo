@@ -5,9 +5,13 @@ namespace ArcGISPclDemo
 {
     class Program
     {
-        static void Main()
+        static void main()
         {
-
+            await MainAsync();
+        }
+        
+        static async Task MainAsync()
+        {
             //var baseUrl = "http://sampleserver3.arcgisonline.com/ArcGIS/";
             //var arcGisServerEndPoint = "/Earthquakes/EarthquakesFromLastSevenDays/FeatureServer/0";
             var baseUrl = "http://arcgis.geodan.nl:6080/arcgis/";
@@ -37,11 +41,10 @@ namespace ArcGISPclDemo
                 var res = PclTester.AddPoint(baseUrl, arcGisServerEndPoint, feature).Result;
                 Console.WriteLine("Added feature to Esri featureserver: {0}", res);
             }
-            catch (AggregateException ag)
+            catch (ArcGISServerException arcGISServerException)
             {
-                var inner = ag.InnerException;
-                Console.Write("Error message " + inner.Message);
-                Console.Write("Error code: " + ((ArcGISServerException)inner).ArcGISError.Code);
+                Console.Write("Error message " + arcGISServerException.Message);
+                Console.Write("Error code: " + arcGISServerException.ArcGISError.Code);
             }
 
             Console.ReadKey();
