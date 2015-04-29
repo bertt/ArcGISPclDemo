@@ -27,12 +27,12 @@ namespace ArcGISPclDemo
             return resultPoints.Features.Count();
         }
 
-        public static async Task<int> AddPoint(string baseUrl, string arcGISServerEndPoint,Feature<Point> point )
+        public static async Task<int> AddFeature<T>(string baseUrl, string arcGISServerEndPoint,Feature<T> feature)
         {
             var gateway = new PortalGateway(baseUrl);
-            var adds = new ApplyEdits<Point>(arcGISServerEndPoint.AsEndpoint())
+            var adds = new ApplyEdits<T>(arcGISServerEndPoint.AsEndpoint())
             {
-                Adds = new List<Feature<Point>> { point }
+                Adds = new List<Feature<T>> { feature }
             };
 
             var resultAdd = await gateway.ApplyEdits(adds);
@@ -46,22 +46,6 @@ namespace ArcGISPclDemo
             return resultAdd.Adds.Count;
         }
 
-        public static async Task<int> AddPolyline(string baseUrl, string arcGISServerEndPoint, Feature<Polyline> line)
-        {
-            var gateway = new PortalGateway(baseUrl);
-            var adds = new ApplyEdits<Polyline>(arcGISServerEndPoint.AsEndpoint())
-            {
-                Adds = new List<Feature<Polyline>> { line }
-            };
-            var resultAdd = await gateway.ApplyEdits(adds);
-
-            if (!resultAdd.Adds[0].Success)
-            {
-                // there was an error, throw exception
-                throw new ArcGISServerException("ArcGIS server returns error.", resultAdd.Adds[0].Error);
-            }
-
-            return resultAdd.Adds.Count;
-        }
+      
     }
 }
