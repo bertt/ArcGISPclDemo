@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ArcGIS.ServiceModel.Common;
 
 namespace ArcGISPclDemo
 {
     class Program
     {
-        static void main()
+        static void Main()
         {
-            await MainAsync();
+            MainAsync().Wait();
         }
         
         static async Task MainAsync()
