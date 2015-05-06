@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ArcGIS.ServiceModel;
 using ArcGIS.ServiceModel.Common;
 
 namespace ArcGISPclDemo
@@ -23,12 +24,15 @@ namespace ArcGISPclDemo
             // get something from featureserver
             var resFeatureServer = await FeatureServiceEditor.GetFeatures<Point>(baseUrl, arcGISServerEndPoint);
             Console.WriteLine("Number of features from Esri featureserver: {0}", resFeatureServer.ToList().Count);
-            addPointSample(baseUrl,arcGISServerEndPoint);
-
+            var addedFeatureId = addPointSample(baseUrl,arcGISServerEndPoint).Result;
+            Console.WriteLine("Added point: " + addedFeatureId);
+            // now delete point
+            var res = await FeatureServiceEditor.DeleteFeature<Point>(baseUrl, arcGISServerEndPoint, addedFeatureId);
+            Console.WriteLine("Feature deleted: " + res.ObjectId);
             Console.ReadLine();
         }
 
-        private static async void addPointSample(string baseUrl, string arcGISServerEndPoint)
+        private static async Task<long> addPointSample(string baseUrl, string arcGISServerEndPoint)
         {
             // add a point feature
             var feature = new Feature<Point>();
@@ -36,23 +40,24 @@ namespace ArcGISPclDemo
             feature.Attributes.Add("objectid", 0);
             feature.Attributes.Add("o_watergan", " ");
             feature.Attributes.Add("symbologie", " ");
-            // oops we miss something here to raise error...
             feature.Attributes.Add("angle", 0);
-            // feature.Attributes.Add("sysangle",0);
+            feature.Attributes.Add("sysangle",0);
 
             feature.Geometry = new Point { X = 165282.05719999969, Y = 501225.37609999999, SpatialReference = new SpatialReference { Wkid = 28992 } };
 
             try
             {
                 var result = await FeatureServiceEditor.AddFeature(baseUrl, arcGISServerEndPoint, feature);
-                Console.WriteLine("Added feature to Esri featureserver: {0}", result);
+                var objectid = result.ObjectId;
+                return objectid;
             }
             catch (ArcGISServerException arcGISServerException)
             {
                 Console.Write("Error message " + arcGISServerException.Message);
                 Console.Write("Error code: " + arcGISServerException.ArcGISError.Code);
             }
-            
+            return 0;
+
         }
 
     }
